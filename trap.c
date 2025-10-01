@@ -86,8 +86,10 @@ usertrap(void)
                 setkilled(p);
             } else {
                 memmove(mem, (char*)pa, PGSIZE);
-                uvmunmap(p->pagetable, PGROUNDDOWN(fault_va), 1, 1);
-                mappages(p->pagetable, PGROUNDDOWN(fault_va), PGSIZE, (uint64)mem, flags | PTE_W);
+                
+                // --- APPLY THE FIX HERE ---
+                *pte = PA2PTE(mem) | flags | PTE_W;
+                dec_ref_count((void*)pa);
             }
         } else {
             // Page is not shared, just make it writable
