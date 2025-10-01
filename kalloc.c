@@ -52,8 +52,9 @@ void inc_ref_count(void *pa) {
 
 int get_ref_count(void *pa) {
   acquire(&ref_counts.lock);
-  return ref_counts.count[(uint64)pa / PGSIZE];
+  int cnt= ref_counts.count[(uint64)pa / PGSIZE];
   release(&ref_counts.lock);
+  return cnt;
 }
 
 // Helper function to decrement the reference count of a physical page
